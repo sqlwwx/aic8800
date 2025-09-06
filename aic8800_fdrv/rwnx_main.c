@@ -22,6 +22,7 @@
 #include <linux/if_arp.h>
 #include <linux/ctype.h>
 #include <linux/random.h>
+#include <linux/timer.h>
 #include "rwnx_defs.h"
 #include "rwnx_dini.h"
 #include "rwnx_msg_tx.h"
@@ -2037,7 +2038,7 @@ void aicwf_p2p_alive_timeout(struct timer_list *t)
     rwnx_vif = (struct rwnx_vif *)data;
     rwnx_hw = rwnx_vif->rwnx_hw;
     #else
-    rwnx_hw = from_timer(rwnx_hw, t, p2p_alive_timer);
+    rwnx_hw = container_of(t, struct rwnx_hw, p2p_alive_timer);
     rwnx_vif = rwnx_hw->p2p_dev_vif;
     #endif
 
@@ -2231,7 +2232,7 @@ static void aicwf_pwrloss_timer(struct timer_list *t)
 	rwnx_vif = (struct rwnx_vif *)data;
 	rwnx_hw = rwnx_vif->rwnx_hw;
 #else
-	rwnx_hw = from_timer(rwnx_hw, t, pwrloss_timer);
+	rwnx_hw = container_of(t, struct rwnx_hw, pwrloss_timer);
 #endif
 	if (!work_pending(&rwnx_hw->pwrloss_work))
 		schedule_work(&rwnx_hw->pwrloss_work);
